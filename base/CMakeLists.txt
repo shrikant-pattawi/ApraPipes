@@ -103,10 +103,10 @@ ENDIF(ENABLE_CUDA)
 include_directories(AFTER SYSTEM include
 	${BOOST_ROOT}/include
 	${OPENCV_ROOT}/include/opencv4
-	/usr/local/cuda-10.2/include
+	/usr/local/cuda-11.4/include
 	../thirdparty/Video_Codec_SDK_10.0.26/Interface
-	../thirdparty/ffmpeg/include
 	${CURSES_INCLUDE_DIR}
+	${FFMPEG_ROOT}/include
 	../thirdparty/zxing-cpp/_install/include/ZXing
 )
 
@@ -131,6 +131,7 @@ SET(CORE_FILES
 	src/Utils.cpp
 	src/FIndexStrategy.cpp
 	src/KeyboardListener.cpp
+	src/OpencvWebcam.cpp
 )
 
 SET(include/CORE_FILES_H
@@ -173,6 +174,7 @@ SET(include/CORE_FILES_H
 	include/MetadataHints.h
 	include/FIndexStrategy.h
 	include/KeyboardListener.h
+	include/OpencvWebcam.h
 )
 
 IF(ENABLE_WINDOWS)
@@ -418,10 +420,12 @@ SET(UT_FILES
 	test/ImageEncodeCV_tests.cpp
 	test/QRReader_tests.cpp
 	test/rotatecv_tests.cpp
+	test/task_test.cpp
+	test/webcamsource_test.cpp
 	${ARM64_UT_FILES}
 	${CUDA_UT_FILES}	
 )
-
+link_directories(${LIB_AVFORMAT}  ${LIB_AVCODEC}  ${LIB_AVUTIL}  ${LIB_FFSWR})
 add_executable(aprapipesut ${UT_FILES})
 
 IF(ENABLE_ARM64)
