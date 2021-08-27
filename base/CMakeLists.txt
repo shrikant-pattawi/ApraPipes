@@ -34,6 +34,8 @@ find_package(Boost CONFIG REQUIRED system thread filesystem serialization log ch
 hunter_add_package(OpenCV)
 find_package(OpenCV)
 
+find_package(gflags REQUIRED)
+
 IF(NOT ENABLE_ARM64)
 	hunter_add_package(ncursesw)
 	find_package(ncursesw CONFIG REQUIRED)
@@ -452,4 +454,5 @@ target_link_libraries(aprapipesut
   ${LIB_FFSWR}
   ${CURSES_LIBRARIES}
   ${LIB_ZXING}
+  gflags
 )

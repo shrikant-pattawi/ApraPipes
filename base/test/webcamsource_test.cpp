@@ -3,7 +3,7 @@
 #include<opencv2/imgproc/imgproc.hpp>
 #include<iostream>
 #include<vector>
-
+#include "ImageViewerModule.h"
 #include "stdafx.h"
 #include <boost/test/unit_test.hpp>
 #include <boost/filesystem.hpp>
@@ -34,6 +34,34 @@ BOOST_AUTO_TEST_CASE(basic, *boost::unit_test::disabled())
 	p.run_all_threaded();
 
 	boost::this_thread::sleep_for(boost::chrono::seconds(10));
+	Logger::setLogLevel(boost::log::trivial::severity_level::error);
+
+	p.stop();
+	p.term();
+
+	p.wait_for_all();
+}
+BOOST_AUTO_TEST_CASE(view, *boost::unit_test::disabled())
+{
+	Logger::setLogLevel(boost::log::trivial::severity_level::info);
+	OpencvWebcamProps sourceProps(1280,960);
+	auto source = boost::shared_ptr<Module>(new OpencvWebcam(sourceProps));
+
+	auto m2 = boost::shared_ptr<ImageViewerModule>(new ImageViewerModule(ImageViewerModuleProps("Display ")));
+	source->setNext(m2);
+
+	StatSinkProps sinkProps;
+	sinkProps.logHealth = true;
+	sinkProps.logHealthFrequency = 100;
+	auto sink = boost::shared_ptr<Module>(new StatSink(sinkProps));
+	source->setNext(sink);
+
+	PipeLine p("test");
+	p.appendModule(source);
+	BOOST_TEST(p.init());
+	p.run_all_threaded();
+
+	boost::this_thread::sleep_for(boost::chrono::seconds(100));
 	Logger::setLogLevel(boost::log::trivial::severity_level::error);
 
 	p.stop();
