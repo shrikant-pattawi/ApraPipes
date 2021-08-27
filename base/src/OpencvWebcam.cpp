@@ -56,21 +56,8 @@ class OpencvWebcam::Detail
 		{
 			if(vid_capture.isOpened())
             {
-                
-                // bool isSuccess=vid_capture.read(img);
-                // if(isSuccess==false)
-                // {
-                //     cout << "Stream disconnected" << endl;
-                //     // break;
-                // // }
-				// vid_capture.set(cv::CAP_PROP_FRAME_WIDTH, 600);//Setting the width of the video
-    	        // vid_capture.set(cv::CAP_PROP_FRAME_HEIGHT, 600);
 				vid_capture >> img;
-				// imageWidth=img.size().width;
-				// imageHeight=img.size().height;
-                // if(isSuccess==true)
                 {
-					cv::Mat resized_down;
 					resize(img, resized_down, cv::Size(width, height), cv::INTER_LINEAR);
 					size_t t = static_cast<size_t>(resized_down.total() * resized_down.elemSize());
 					auto frame = mMakeFrame(t);
@@ -92,6 +79,7 @@ private:
 	std::function<frame_sp(size_t)> mMakeFrame;
 	SendFrame mSendFrame;
 	cv::Mat img;
+	cv::Mat resized_down;
 };
 
 OpencvWebcam::OpencvWebcam(OpencvWebcamProps _props): Module(SOURCE, "OpencvWebcam", _props), mProps(_props)
@@ -129,7 +117,6 @@ bool OpencvWebcam::init()
 		return false;
 	}
 	return true;
-	// return mDetail->initCamera(mProps.width, mProps.height);
 }
 
 bool OpencvWebcam::term()
@@ -145,27 +132,3 @@ bool OpencvWebcam::produce()
 	mDetail->retrieveImage(mProps.width, mProps.height);
 	return true;
 }
-// void OpencvWebcam::setMetadata(framemetadata_sp &metadata)
-// {
-// 	if (!metadata->isSet())
-// 	{
-// 		return;
-// 	}
-// 	auto rawMetadata = FrameMetadataFactory::downcast<RawImageMetadata>(metadata);
-// 	RawImageMetadata outputMetadata(600, 600, rawMetadata->getImageType(), rawMetadata->getType(), 0, rawMetadata->getDepth(), FrameMetadata::HOST, true);
-// 	// auto rawOutMetadata = FrameMetadataFactory::downcast<RawImageMetadata>(mDetail->mOutputMetadata);//*****
-// 	// rawOutMetadata->setData(outputMetadata);
-// 	// auto imageType = rawMetadata->getImageType();
-
-// 	// mDetail->mFrameLength = mDetail->mOutputMetadata->getDataSize();
-// 	// mDetail->initMatImages(metadata);
-// 	LOG_ERROR << "Printing width"<< rawMetadata->getWidth();
-// 	LOG_ERROR << "Printing Height"<< rawMetadata->getHeight();
-// }
-
-// bool OpencvWebcam::processSOS(frame_sp &frame)
-// {
-// 	auto metadata = frame->getMetadata();
-// 	setMetadata(metadata);
-// 	return true;
-// }

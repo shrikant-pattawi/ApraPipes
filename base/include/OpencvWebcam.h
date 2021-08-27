@@ -26,8 +26,6 @@ class OpencvWebcam : public Module
         bool term();
         bool produce();
         bool validateOutputPins();
-        // void setMetadata(framemetadata_sp &metadata);
-        // bool processSOS(frame_sp &frame);
     
     private:
         class Detail;
